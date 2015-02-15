@@ -4,7 +4,8 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/ace-window
-;; Version: 0.7.0
+;; Version: 20150207.540
+;; X-Original-Version: 0.7.0
 ;; Package-Requires: ((ace-jump-mode "2.0"))
 ;; Keywords: cursor, window, location
 
@@ -205,10 +206,13 @@ Amend MODE-LINE to the mode line for the duration of the selection."
          ;; turn off helm transient map
          (remove-hook 'post-command-hook 'helm--maybe-update-keymap)
          (unwind-protect
-              (let (node)
+              (let (node tmpchar)
                 (catch 'done
                   (while t
-                    (setq node (cl-position (read-char) aw-keys))
+                    (setq tmpchar (read-char))
+                    (setq node (cl-position tmpchar aw-keys))
+                    (if (char-equal tmpchar ?m)
+                      (throw 'done t))
                     (when node
                       (setq node (nth node (cdr ace-jump-search-tree))))
                     (cond ((null node)
